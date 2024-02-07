@@ -41,16 +41,6 @@ curl -X POST http://localhost:8080/api/auth/login
 -H "Content-Type: application/json"
 -d '{"username": "user.test", "password": "123456"}'
 
-### Acessar recurso protegido
-curl -X GET http://localhost:8080/api/protected/resource
--H "Authorization: Bearer <TOKEN_AQUI>"
-
-curl -X GET http://localhost:8080/api/protected/resource
--H "Authorization: Bearer <TOKEN_AQUI>"
-
-
-Substitua `<TOKEN_AQUI>` pelo token de acesso recebido após a autenticação.
-
 ## Contribuindo
 
 Contribuições são bem-vindas! Para contribuir, abra uma issue ou faça um pull request.
