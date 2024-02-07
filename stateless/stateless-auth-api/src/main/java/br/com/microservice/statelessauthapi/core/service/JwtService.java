@@ -2,13 +2,12 @@ package br.com.microservice.statelessauthapi.core.service;
 
 import br.com.microservice.statelessauthapi.core.model.User;
 import br.com.microservice.statelessauthapi.infra.exception.AuthenticationException;
+import br.com.microservice.statelessauthapi.infra.exception.ValidationException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import jakarta.xml.bind.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
@@ -23,7 +22,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 public class JwtService {
 
     public static final int ONE_DAY_IN_HOURS = 24;
-    public static final String EMPTY_SPACE = "";
+    public static final String EMPTY_SPACE = " ";
     public static final int TOKEN_INDEX = 1;
     @Value("${app.token.secret-key}")
     private String secretKey;
@@ -34,8 +33,8 @@ public class JwtService {
         data.put("id", user.getId().toString());
         data.put("username", user.getUsername());
         return Jwts.builder()
-                .setClaims(data)
-                .setExpiration(generationExpiresAt())
+                .claims(data)
+                .expiration(generationExpiresAt())
                 .signWith(generateSign())
                 .compact();
     }
@@ -52,21 +51,21 @@ public class JwtService {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    public void validateAccessToken(String token) throws ValidationException {
+    public void validateAccessToken(String token) {
         var accessToken = extractToken(token);
         try {
             Jwts
-                    .parserBuilder()
-                    .setSigningKey(generateSign())
+                    .parser()
+                    .verifyWith(generateSign())
                     .build()
-                    .parseClaimsJwt(accessToken)
-                    .getBody();
+                    .parseSignedClaims(accessToken)
+                    .getPayload();
         } catch (Exception e) {
             throw new AuthenticationException("Invalid token " + e.getMessage());
         }
     }
 
-    private String extractToken(String token) throws ValidationException {
+    private String extractToken(String token) {
         if (isEmpty(token))
             throw new ValidationException("The access token was not informed.");
 
