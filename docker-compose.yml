@@ -25,6 +25,7 @@ services:
       - DB_NAME=auth-db
       - DB_USER=postgres
       - DB_PASSWORD=postgres
+      - JWT_SECRET_KEY=Y3Vyc28tYXV0ZW50aWNhY2FvLXN0YXRlZnVsLXN0YXRlbGVzLW1pY3Jvc3NlcnZpY29zLWNvbnRhaW5lcg==
     networks:
       - auth
     ports:
@@ -35,6 +36,7 @@ services:
     container_name: stateless-any-api
     environment:
       - PORT=8081
+      - JWT_SECRET_KEY=Y3Vyc28tYXV0ZW50aWNhY2FvLXN0YXRlZnVsLXN0YXRlbGVzLW1pY3Jvc3NlcnZpY29zLWNvbnRhaW5lcg==
     networks:
       - auth
     ports:
